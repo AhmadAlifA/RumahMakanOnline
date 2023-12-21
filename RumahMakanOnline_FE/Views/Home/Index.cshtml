@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+    int IdUser = 0;
+    int IdRole = 0;
+    IdUser = Context.Session.GetInt32("IdUser") ?? 0;
+    IdRole = Context.Session.GetInt32("IdRole") ?? 0;
+    string NameCustomer = Context.Session.GetString("NameCustomer") ?? "NoName";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>@if (IdUser != 0) @NameCustomer 
+        To Rumah Makan Online Application</p>
+    @if (IdUser != 0)
+    {
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3 id="tProduct">
+                            @ViewBag.countTransaction
+                            </h3>
+                            <p>Total Orders</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a href="" class="small-box-footer">
+                            More info
+                            <i class="fas fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3 id="estimate">
+                            @ViewBag.amounYear.ToString("#,##0")
+                            </h3>
+
+                            <p>Transaction in this year</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stat-bars"></i>
+                        </div>
+                        <a href="" class="small-box-footer">
+                            More info
+                            <i class="fas fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+    }
+</div>

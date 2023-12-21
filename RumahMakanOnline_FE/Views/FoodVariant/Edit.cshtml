@@ -1,0 +1,73 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMFoodVariant
+
+
+<div class="card">
+    <!-- /.card-header -->
+    <form asp-action="Edit" method="post" id="form-edit">
+        <div class="card-body">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="CatId" class="form-label">Id Category</label>
+                @Html.DropDownListFor(a=>a.CatId,
+                new SelectList(ViewBag.listCategory, "Id", "CatName"), new {@class = "form-control"})
+            </div>
+            <div class="form-group">
+                <label for="VarName" class="form-label">Nama Variant</label>
+                <input type="text" class="form-control" id="VarName" value="@Model.VarName" name="VarName">
+            </div>
+            <div class="form-group">
+                <label for="Description" class="form-label">Description</label>
+                <textarea class="form-control" id="Description" rows="3" name="Description">@Model.Description</textarea>
+            </div>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer clearfix">
+            <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:10px">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $("#form-edit").validate({
+        errorClass: "is-invalid text-danger",
+        rules: {
+            VarName: {
+                required: true,
+                minlength: 2
+            },
+            CatId: "required",
+            Description: "required"
+        },
+        messages: {
+            VarName: {
+                required: "Please enter name Variant",
+                minlenght: "Name Variant must consist of at least 2 character"
+            },
+            CatId: "Please enter Category",
+            Description: "Please enter description"
+        },
+        submitHandler: function (form) {
+            var dataForm = $(form).serialize();
+            debugger
+            $.ajax({
+                url: "/FoodVariant/Edit",
+                method: "post",
+                data: dataForm,
+                dataType: "json",
+                success: function (respon) {
+                    if (respon.dataRespon.success) {
+                        $("#modal-default").modal("hide")
+                        toastr.success(respon.dataRespon.message)
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 2000);
+                    } else {
+                        toastr.error(respon.dataRespon.message)
+                    }
+                }
+            })
+        }
+    })
+</script>

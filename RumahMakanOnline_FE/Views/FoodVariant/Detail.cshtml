@@ -1,0 +1,37 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMFoodVariant
+
+<form>
+    <div class="form-group">
+        <label for="CatId" class="form-label">Id Category</label>
+        <input type="text" class="form-control" id="CatId" value="@Model.CatId" name="CatId" readonly>
+    </div>
+    <div class="form-group">
+        <label for="VarName" class="form-label">Nama Variant</label>
+        <input type="text" class="form-control" id="VarName" value="@Model.VarName" name="VarName" readonly>
+    </div>
+    <div class="form-group">
+        <label for="Description" class="form-label">Description</label>
+        <textarea class="form-control" id="Description" rows="3" readonly>@Model.Description</textarea>
+    </div>
+    <div class="form-group">
+        <label for="CreateBy" class="form-label">Create By</label>
+        <input type="text" class="form-control" id="CreateBy" value="@Model.CreateBy" readonly>
+    </div>
+    <div class="form-group">
+        <label for="CreateDate" class="form-label">Create Date</label>
+        <input type="text" class="form-control" id="CreateDate" value="@Model.CreateDate" readonly>
+    </div>
+    <div class="form-group">
+        <label for="UpdateBy" class="form-label">Update By</label>
+        <input type="text" class="form-control" id="UpdateBy" value="@Model.UpdateBy" readonly>
+    </div>
+    <div class="form-group">
+        <label for="UpdateDate" class="form-label">Update Date</label>
+        <input type="text" class="form-control" id="UpdateDate" value="@Model.UpdateDate" readonly>
+    </div>
+    <button data-dismiss="modal" class="btn btn-primary">Back to Variant</button>
+</form>
+
+
+

@@ -1,0 +1,35 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMFoodProduct
+
+<h2>Are u sure for delete @Model.NameProduct?</h2>
+
+<form asp-action="SureDelete" id="form-delete">
+    <input type="hidden" value="@Model.Id" name="Id" id="Id" />
+    <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+    <button class="btn btn-danger">Sure</button>
+</form>
+
+
+<script>
+    $("#form-delete").validate({
+        submitHandler: function (form) {
+            var id = $("#Id").val();
+            $.ajax({
+                url: "/FoodProduct/SureDelete",
+                data: { id: id },
+                dataType: "json",
+                success: function (respon) {
+                    if (respon.dataRespon.success) {
+                        $("#modal-default").modal("hide")
+                        toastr.success(respon.dataRespon.message)
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 2000);
+                    } else {
+                        toastr.error(respon.dataRespon.message)
+                    }
+                }
+            })
+        }
+    })
+</script>

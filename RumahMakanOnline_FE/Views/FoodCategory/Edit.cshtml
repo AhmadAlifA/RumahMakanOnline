@@ -1,0 +1,64 @@
+﻿@using RumahMakanOnline_API.Models
+@model FoodCategory
+
+<div class="card">
+    <!-- /.card-header -->
+    <form asp-action="Edit" method="post" id="form-edit">
+        <div class="card-body">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="CatName" class="form-label">Nama Category</label>
+                <input type="text" class="form-control" id="CatName" value="@Model.CatName" name="CatName">
+            </div>
+            <div class="form-group">
+                <label for="Description" class="form-label">Description</label>
+                <textarea class="form-control" id="Description" rows="3" name="Description">@Model.Description</textarea>
+            </div>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer clearfix">
+            <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $("#form-edit").validate({
+        errorClass: "is-invalid text-danger",
+        rules: {
+            CatName: {
+                required: true,
+                minlength: 2
+            },
+            Description: "required"
+        },
+        messages: {
+            CatName: {
+                required: "Please enter name Category",
+                minlenght: "Name Category must consist of at least 2 character"
+            },
+            Description: "Please enter description"
+        },
+        submitHandler: function (form) {
+            var dataForm = $(form).serialize();
+            $.ajax({
+                url: "/FoodCategory/Edit",
+                method: "post",
+                data: dataForm,
+                dataType: "json",
+                success: function (respon) {
+                    if (respon.dataRespon.success) {
+                        $("#modal-default").modal("hide")
+                        toastr.success(respon.dataRespon.message)
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 2000);
+                    } else {
+                        toastr.error(respon.dataRespon.message)
+                    }
+                }
+            })
+        }
+    })
+</script>

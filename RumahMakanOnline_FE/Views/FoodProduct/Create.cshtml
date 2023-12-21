@@ -1,0 +1,143 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMFoodProduct
+
+
+<div class="card">
+    <!-- /.card-header -->
+    <form asp-action="Create" method="post" enctype="multipart/form-data" id="form-create">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="NameProduct" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="NameProduct" value="@Model.NameProduct" name="NameProduct">
+                    </div>
+                    <div class="form-group">
+                        <label for="CatId" class="form-label">Category Name</label>
+                        @Html.DropDownListFor(a=>a.CatId,
+                        new SelectList(ViewBag.ListCategory, "Id", "CatName"),"Select Category", new {@class = "form-control"})
+                    </div>
+                    <div class="form-group">
+                        <label for="VarId" class="form-label">Variant Name</label>
+                        @Html.DropDownListFor(a=>a.VarId,
+                        new SelectList(ViewBag.ListVariant, "Id", "VarName"),"Select Variant", new {@class = "form-control"})
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Price" class="form-label">Price</label>
+                        <input type="text" class="form-control" id="Price" value="@Model.Price" name="Price">
+                    </div>
+                    <div class="form-group">
+                        <label for="Stock" class="form-label">Stock</label>
+                        <input type="text" class="form-control" id="Stock" value="@Model.Stock" name="Stock">
+                    </div>
+                    <div class="form-group">
+                        <label for="ImageFile" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" id="ImageFile" value="@Model.Image" name="ImageFile">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer clearfix">
+            <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $("#CatId").change(function () {
+        var CatId = $(this).val()
+        //debugger
+        $.ajax({
+            url: "/FoodProduct/GetFoodVariantByCategory",
+            data: { CatId: CatId },
+            dataType: "json",
+            success: function (respon) {
+                //debugger
+                $("#VarId").empty()
+                $("#VarId").append("<option>Select Variant</option>")
+
+                $.each(respon, function (index, item) {
+                    $("#VarId").append(`<option value="${item.id}">${item.VarName}</option>>`)
+                })
+            }
+        })
+
+    })
+
+        $("#form-create").validate({
+            errorClass: "is-invalid text-danger",
+            rules: {
+                NameProduct: {
+                    required: true,
+                    minlength: 2
+                },
+                CatId: "required",
+                VarId: "required",
+                Price: {
+                    required : true,
+                    number : true
+                },
+                Stock: {
+                    required : true,
+                    number : true
+                },
+                ImageFile: {
+                    extension: "jpg|jpeg|png"
+                }
+            },
+            messages: {
+                VarName: {
+                    required: "Please enter name Product",
+                    minlenght: "Name Product must consist of at least 2 character"
+                },
+                CatId: "Please enter Category",
+                VarId: "Please enter Variant",
+                Price: {
+                    required: "PLease enter price",
+                    number: "Please enter number only"
+                },
+                Stock: {
+                    required: "PLease enter stock",
+                    number: "Please enter number only"
+                },
+                ImageFile: {
+                    extension : "Please put JPG/JPEG/PNG"
+                }
+            },
+
+        submitHandler: function (form) {
+            var data = new FormData($(form)[0]);
+
+            var file = $("#ImageFile").prop("files");
+            if (file.length > 0) {
+                data.append("ImageFile", file[0]);
+            }
+
+            $.ajax({
+                url: "/FoodProduct/Create",
+                method: "post",
+                data: data,
+                dataType: "json",
+                contentType: false, // Set contentType to false when using FormData
+                processData: false, // Set processData to false when using FormData
+                success: function (respon) {
+                    if (respon.dataRespon.success) {
+                        toastr.success("Success");
+                        $("#modal-default").modal("hide");
+                        toastr.success(respon.dataRespon.message);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        toastr.error(respon.dataRespon.message);
+                    }
+                }
+            });
+        }
+        })
+</script>

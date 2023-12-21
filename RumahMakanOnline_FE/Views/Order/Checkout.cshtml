@@ -1,0 +1,100 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMOrderHeader
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>SubTotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ListDetail)
+                {
+                    <tr>
+                        <td>@item.NameProduct</td>
+                        <td>@item.Qty</td>
+                        <td>@item.Price</td>
+                        <td>@item.SubTotal</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row">
+            <!-- accepted payments column -->
+            <div class="col-6">
+                <p class="lead">Payment Methods:</p>
+                <img src="~/adminlte/dist/img/credit/visa.png" alt="Visa">
+                <img src="~/adminlte/dist/img/credit/mastercard.png" alt="Mastercard">
+                <img src="~/adminlte/dist/img/credit/american-express.png" alt="American Express">
+                <img src="~/adminlte/dist/img/credit/paypal2.png" alt="Paypal">
+
+                @*                <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem
+                plugg
+                dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+                </p>*@
+            </div>
+            <!-- /.col -->
+            <div class="col-6">
+                <p class="lead">Amount Due : @DateTime.Now.ToString("dddd, dd MMMM yyyy")</p>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Total Produc:</th>
+                                <td>@Model.TotalQty pcs</td>
+                            </tr>
+                            <tr>
+                                <th>Total:</th>
+                                <td>Rp.@Model.Amount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+
+    </div>
+</div>
+
+<div class="row no-print">
+    <div class="col-12">
+        <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+        <button type="button" class="btn btn-success float-right" id="btn_submit">
+            <i class="far fa-credit-card"></i> Submit
+            Payment
+        </button>
+    </div>
+</div>
+
+<script>
+    $("#btn_submit").click(function () {
+        $.ajax({
+            url: "/Order/SubmitPayment",
+            data: dataheader,
+            method: "post",
+            //type: "post",
+            dataType: "json",
+            success: function (respon) {
+                debugger
+                if (respon.success) {
+                    $("#modal-xl").modal("hide")
+                    toastr.success(respon.message)
+                    setTimeout(function () {
+                        window.location.reload()
+                    }, 2000);
+                } else {
+                    toastr.error(respon.message)
+                }
+            }
+        })
+    })
+</script>

@@ -1,0 +1,35 @@
+﻿@using RumahMakanOnline_API.Models
+@model FoodCategory
+
+<h2>Are You Sure For Delete @Model.CatName ?</h2>
+
+<form asp-action="SureDelete">
+    <input type="hidden" value="@Model.Id" name="Id" id="Id" />
+    <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+    <button class="btn btn-danger">sure</button>
+</form>
+
+<script>
+    $("#form-delete").validate({
+        submitHandler: function (form) {
+            var id = $("#Id").val();
+            //debugger
+            $.ajax({
+                url: "/FoodCategory/SureDelete",
+                data: { Id: id },
+                dataType: "json",
+                success: function (respon) {
+                    if (respon.dataRespon.success) {
+                        $("#modal-default").modal("hide")
+                        toastr.success(respon.dataRespon.message)
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 2000);
+                    } else {
+                        toastr.error(respon.dataRespon.message)
+                    }
+                }
+            })
+        }
+    })
+</script>

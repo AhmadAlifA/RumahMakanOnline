@@ -1,0 +1,30 @@
+﻿@using RumahMakanOnline_API.Models
+@model FoodCategory
+<form>
+    <div class="mb-3">
+        <label for="CatName" class="form-label">Name Category</label>
+        <input type="text" class="form-control" id="CatName" value="@Model.CatName" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Menu of Dessert</label>
+        <textarea type="text" class="form-control" id="Description" value="@Model.Description" readonly>
+        </textarea>
+    </div>
+    <div class="mb-3">
+        <label for="CreateBy" class="form-label">Create By</label>
+        <input type="text" class="form-control" id="Description" value="@Model.CreateBy" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="CreateDate" class="form-label">Create Date</label>
+        <input type="text" class="form-control" id="Description" value="@Model.CreateDate" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="UpdateBy" class="form-label">Update By</label>
+        <input type="text" class="form-control" id="Description" value="@Model.UpdateBy" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="UpdateDate" class="form-label">Update Date</label>
+        <input type="text" class="form-control" id="Description" value="@Model.UpdateDate" readonly>
+    </div>
+    <button data-dismiss="modal" class="btn btn-primary">Back to Category</button>
+</form>

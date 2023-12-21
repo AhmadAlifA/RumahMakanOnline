@@ -1,0 +1,150 @@
+﻿@using RumahMakanOnline_API.Models
+@using RumahMakanOnline_ViewModels
+@model PaginatedList<FoodCategory>
+
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Table Category</h1>
+        <br />
+        @*<a class="btn btn-primary" asp-area="" asp-controller="Category" asp-action="Create">Create</a>*@
+
+        <button type="button" class="btn btn-default" id="btn_create">
+            Create
+        </button>
+        <div class="card-tools">
+            <form asp-action="index" asp-route-pageSize="@ViewBag.pageSize">
+                <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-default">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    @*<th scope="col">Category Name</th>*@
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort" asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                           asp-route-pageSize="@ViewBag.pageSize" style="color:black">Category Name</a>
+                    </th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (FoodCategory item in Model)
+                {
+                    <tr>
+                        <th scope="row">@item.Id</th>
+                        <td>@item.CatName</td>
+                        <td>@item.Description</td>
+                        <td>
+                            @*                            <a class="btn btn-success" asp-area="" asp-controller="Category" asp-action="Edit"
+                        asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-warning" asp-area="" asp-controller="Category" asp-action="Detail"
+                        asp-route-id="@item.Id">Detail</a>
+                        <a class="btn btn-danger" asp-area="" asp-controller="Category" asp-action="Delete"
+                        asp-route-id="@item.Id">Delete</a>*@
+                            <button class="btn btn-success btn_edit" dataid="@item.Id">Edit</button>
+                            <button class="btn btn-warning btn_detail" dataid="@item.Id">Detail</button>
+                            <button class="btn btn-danger btn_delete" dataid="@item.Id">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+        <div class="row">
+            <div class="col-2">
+                <form asp-action="Index" id="form-pageSize" asp-route-CurrentFilter="@ViewBag.CurrentFilter">
+                    <select id="pageSize" class="form-control" name="pageSize">
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </form>
+            </div>
+            <div class="col-10">
+                <div class="float-right">
+                    Page @Model.PageIndex of @Model.TotalPages
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSort"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                       asp-route-pageSize="@ViewBag.pageSize"
+                       class="btn btn-default @prevDisabled">
+                        Previous
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSort"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                       asp-route-pageSize="@ViewBag.pageSize"
+                       class="btn btn-default @nextDisabled">
+                        Next
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $("#pageSize").val(@ViewBag.pageSize)
+    $("#pageSize").change(function () {
+        $("#form-pageSize").submit();
+    })
+
+    $("#btn_create").click(function () {
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Create Category")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodCategory/Create")
+        $("#modal-default").modal("show");
+    });
+    $(".btn_edit").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Edit Category")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodCategory/Edit?id=" + id)
+        $("#modal-default").modal("show");
+    })
+
+    $(".btn_detail").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Detail Category")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodCategory/Detail?id=" + id)
+        $("#modal-default").modal("show");
+    })
+
+    $(".btn_delete").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Delete Category")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodCategory/Delete?id=" + id)
+        $("#modal-default").modal("show");
+    })
+</script>

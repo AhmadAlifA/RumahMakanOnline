@@ -1,0 +1,162 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMUserCustomer
+
+<div class="card card-outline card-primary">
+
+    <div class="card-header text-center">
+        <a href="../../index2.html" class="h1"><b>Admin</b>LTE</a>
+    </div>
+    <div class="card-body">
+        <p class="login-box-msg">Register a new membership</p>
+        <form asp-action="Register" method="post" id="form-register">
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Full name" name="CusName" id="CusName">
+            </div>
+            <div class="mb-3">
+                <input type="email" class="form-control" placeholder="Email" name="Email" id="Email">
+                <span id="val_email" class="is-invalid text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="ContactNum" name="ContactNum" id="ContactNum">
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Address" name="Address" id="Address">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Password" name="Password" id="Password">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Retype password" name="Retype" id="Retype">
+            </div>
+            <div class="form-group">
+                <label for="IdCategory" class="form-label" name="IdRole" id="IdRole">Role</label>
+                @Html.DropDownListFor(a=>a.RoleId,new SelectList(ViewBag.DataRole, "Id", "RoleName"),"--Select Role--", new {@class = "form-control"})
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                        <label for="agreeTerms">
+                            I agree to the <a href="#">terms</a>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block" fdprocessedid="64fyr8">Register</button>
+                </div>
+
+            </div>
+        </form>
+        <div class="social-auth-links text-center">
+            <a id="btn_back_login" class="btn btn-block btn-success">
+                <i class="fab fa-google-plus mr-2"></i>
+                I already have a membership
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    $("#btn_back_login").click(function () {
+        $("#header-modal-default").remove()
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/Auth/Login")
+        $("#modal-default").modal("show");
+    })
+
+    $("#form-register").validate({
+        errorClass: "is-invalid text-danger",
+        rules: {
+            CusName: {
+                required: true,
+                minlength: 2
+            },
+            ContactNum: {
+                required: true,
+                minlength: 2
+            },
+            Email: {
+                required: true,
+                email: true
+            },
+            Address: {
+                required: true,
+                minlength: 2
+            },
+            Password: {
+                required: true,
+                minlength: 1
+            },
+            Retype: {
+                required: true,
+                equalTo: "#Password"
+            },
+            IdRole: "required",
+            terms: "required"
+        },
+        messages: {
+            CusName: {
+                required: "Please enter Name Customer",
+                minlenght: "Name Product must consist of at least 2 character"
+            },
+            ContactNum: {
+                required: "Please enter ContactNum",
+                minlenght: "Name Product must consist of at least 2 character"
+            },
+            Email: {
+                required: "Please enter Email",
+                email: "Please enter a valid email"
+            },
+            Address: {
+                required: "Please enter Address",
+                minlenght: "Name Product must consist of at least 2 character"
+            },
+            Password: {
+                required: "Please enter Password",
+                minlenght: "Name Product must consist of at least 1 character"
+            },
+            Retype: {
+                required: "Please enter Retype Password",
+                equalTo: "Password not match"
+            },
+            IdRole: "Please enter name IdRole",
+            terms: "Please enter name terms",
+        },
+        submitHandler: function (form) {
+            debugger
+            var email = $("#Email").val();
+            $.ajax({
+                url: "/Auth/CheckEmailDuplicate",
+                data: { Email: email },
+                success: function (respon) {
+                    if (respon == true) {
+                        $("#val_email").text("Email is already taken")
+                        return false;
+                    }
+                    else {
+                        var dataForm = $(form).serialize();
+                        $.ajax({
+                            url: "/Auth/Register",
+                            method: "post",
+                            data: dataForm,
+                            dataType: "json",
+                            success: function (respon) {
+                                if (respon.success) {
+                                    $("#modal-default").modal("hide")
+                                    toastr.success(respon.message)
+                                    setTimeout(function () {
+                                        window.location.reload()
+                                    }, 2000);
+                                }
+                                else {
+                                    toastr.error(respon.message)
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    })
+
+</script>

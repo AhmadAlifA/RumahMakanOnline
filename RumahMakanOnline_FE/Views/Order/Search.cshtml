@@ -1,0 +1,62 @@
+﻿<form asp-action="HistoryTransaction">
+    <div class="form-group">
+        <label for="CodeTransaction" class="form-label">Code Transaction</label>
+        <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control float-right" placeholder="Search">
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+
+            <div class="form-group">
+                <label for="MinOrderDate" class="form-label">Min Order Date</label>
+                <input type="date" name="MinOrderDate" value="@ViewBag.filterMinDate" class="form-control float-right"
+                       max="@DateTime.Now.ToString("yyyy-MM-dd")" id="MinOrderDate" placeholder="MinOrderDate">
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <label for="MaxOrderDate" class="form-label">Max Order Date</label>
+                <input type="date" name="MaxOrderDate" value="@ViewBag.filterMaxDate" class="form-control float-right"
+                       max="@DateTime.Now.ToString("yyyy-MM-dd")" id="MaxOrderDate" placeholder="MaxOrderDate">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+
+            <div class="form-group">
+                <label for="MinPrice" class="form-label">Min Amount</label>
+                <input type="number" name="MinPrice" value="@ViewBag.filterMinAmount" class="form-control float-right" id="MinPrice" placeholder="MinPrice">
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <label for="MaxPrice" class="form-label">Max Amount</label>
+                <input type="number" name="MaxPrice" value="@ViewBag.filterMaxAmount" class="form-control float-right" id="MaxPrice" placeholder="MaxPrice">
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer clearfix">
+        <button data-dismiss="modal" class="btn btn-light">Cancel</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+<script>
+    $("#MinOrderDate").change(function () {
+        var min = $(this).val()
+
+        $("#MaxOrderDate").attr({ "min": min })
+    })
+    $("#MaxOrderDate").change(function () {
+        var max = $(this).val()
+
+        $("#MinOrderDate").attr({ "max": max })
+    })
+
+
+</script>

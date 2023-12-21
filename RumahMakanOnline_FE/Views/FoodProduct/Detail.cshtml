@@ -1,0 +1,48 @@
+﻿@using RumahMakanOnline_ViewModels
+@model VMFoodProduct
+
+<form>
+    <div class="form-group">
+        <label for="Image" class="form-label">Image</label>
+        </br>
+        <img src="~/images/@Model.Image" class="elevation-2" alt="User Image" style="width: 40%;" readonly>
+    </div>
+    <div class="form-group">
+        <label for="NameProduct" class="form-label">Nama Product</label>
+        <input type="text" class="form-control" id="NameProduct" value="@Model.NameProduct" name="NameProduct" readonly>
+    </div>
+    <div class="form-group">
+        <label for="CatName" class="form-label">Nama Category</label>
+        <input type="text" class="form-control" id="CatName" value="@Model.CatName" name="CatName" readonly>
+    </div>
+    <div class="form-group">
+        <label for="VarName" class="form-label">Nama Variant</label>
+        <input type="text" class="form-control" id="VarName" value="@Model.VarName" name="VarName" readonly>
+    </div>
+    <div class="form-group">
+        <label for="Price" class="form-label">Price</label>
+        <input type="text" class="form-control" id="Price" value="@Model.Price" name="Price" readonly>
+    </div>
+    <div class="form-group">
+        <label for="Stock" class="form-label">Stock</label>
+        <input type="text" class="form-control" id="Stock" value="@Model.Stock" name="Stock" readonly>
+    </div>
+    <div class="form-group">
+        <label for="CreateBy" class="form-label">Create By</label>
+        <input type="text" class="form-control" id="CreateBy" value="@Model.CreateBy" readonly>
+    </div>
+    <div class="form-group">
+        <label for="CreateDate" class="form-label">Create Date</label>
+        <input type="text" class="form-control" id="CreateDate" value="@Model.CreateDate" readonly>
+    </div>
+    <div class="form-group">
+        <label for="UpdateBy" class="form-label">Update By</label>
+        <input type="text" class="form-control" id="UpdateBy" value="@Model.UpdateBy" readonly>
+    </div>
+    <div class="form-group">
+        <label for="UpdateDate" class="form-label">Update Date</label>
+        <input type="text" class="form-control" id="UpdateDate" value="@Model.UpdateDate" readonly>
+    </div>
+    <button data-dismiss="modal" class="btn btn-primary">Back to Product</button>
+</form>
+

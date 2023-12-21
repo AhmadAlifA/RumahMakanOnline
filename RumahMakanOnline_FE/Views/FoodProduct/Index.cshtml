@@ -1,0 +1,180 @@
+﻿@using RumahMakanOnline_ViewModels
+@*@model List<VMProduct>*@
+@model PaginatedList<VMFoodProduct>
+
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Table Product</h1>
+        <br />
+        <button type="button" class="btn btn-default" id="btn_create">
+            Create
+        </button>
+
+        <div class="card-tools">
+            <form asp-action="index" asp-route-pageSize="@ViewBag.pageSize">
+                <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control float-right" placeholder="Search">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-default">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button type="button" class="btn btn-default" id="btn-search-plus">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Img</th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewBag.IdSort" asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                           asp-route-pageSize="@ViewBag.pageSize" style="color:black" asp-route-MinPrice="@ViewBag.filterMinPrice"
+                           asp-route-MaxPrice="@ViewBag.filterMaxPrice">Id</a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort" asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                           asp-route-pageSize="@ViewBag.pageSize" style="color:black" asp-route-MinPrice="@ViewBag.filterMinPrice"
+                           asp-route-MaxPrice="@ViewBag.filterMaxPrice">Product Name</a>
+                    </th>
+                    <th scope="col">Variant Name</th>
+                    <th scope="col">Category Name</th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSort" asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                           asp-route-pageSize="@ViewBag.pageSize" style="color:black">Price</a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewBag.StockSort" asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                           asp-route-pageSize="@ViewBag.pageSize" style="color:black" asp-route-MinPrice="@ViewBag.filterMinPrice"
+                           asp-route-MaxPrice="@ViewBag.filterMaxPrice">Stock</a>
+                    </th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (VMFoodProduct item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="~/images/@item.Image" class="direct-chat-img" alt="User Image">
+                        </td>
+                        <th scope="row">@item.Id</th>
+                        <td>@item.NameProduct</td>
+                        <td>@item.VarName</td>
+                        <td>@item.CatName</td>
+                        <td>@item.Price</td>
+                        <td>@item.Stock</td>
+                        <td>
+                            <button class="btn btn-success btn_edit" dataid="@item.Id">Edit</button>
+                            <button class="btn btn-warning btn_detail" dataid="@item.Id">Detail</button>
+                            <button class="btn btn-danger btn_delete" dataid="@item.Id">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+        <div class="row">
+            <div class="col-2">
+                <form asp-action="Index" id="form-pageSize" asp-route-CurrentFilter="@ViewBag.CurrentFilter" asp-route-MinPrice="@ViewBag.filterMinPrice"
+                      asp-route-MaxPrice="@ViewBag.filterMaxPrice">
+                    <select id="pageSize" class="form-control" name="pageSize">
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </form>
+            </div>
+            <div class="col-10">
+                <div class="float-right">
+                    Page @Model.PageIndex of @Model.TotalPages
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSort"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                       asp-route-pageSize="@ViewBag.pageSize"
+                       asp-route-MinPrice="@ViewBag.filterMinPrice"
+                       asp-route-MaxPrice="@ViewBag.filterMaxPrice"
+                       class="btn btn-default @prevDisabled">
+                        Previous
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSort"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-CurrentFilter="@ViewBag.CurrentFilter"
+                       asp-route-pageSize="@ViewBag.pageSize"
+                       asp-route-MinPrice="@ViewBag.filterMinPrice"
+                       asp-route-MaxPrice="@ViewBag.filterMaxPrice"
+                       class="btn btn-default @nextDisabled">
+                        Next
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>~~~
+</div>
+
+<script>
+    $("#pageSize").val(@ViewBag.pageSize)
+    $("#pageSize").change(function () {
+        $("#form-pageSize").submit();
+    })
+
+    $("#btn_create").click(function () {
+        $("#header-modal-xl").empty()
+        $("#header-modal-xl").text("Create Product")
+        $("#body-modal-xl").empty()
+        $("#body-modal-xl").load("/FoodProduct/Create")
+        $("#modal-xl").modal("show");
+    });
+
+    $("#btn-search-plus").click(function () {
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Search")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodProduct/Search")
+        $("#modal-default").modal("show");
+    })
+
+    $(".btn_edit").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#header-modal-xl").empty()
+        $("#header-modal-xl").text("Edit Product")
+        $("#body-modal-xl").empty()
+        $("#body-modal-xl").load("/FoodProduct/Edit?id=" + id)
+        $("#modal-xl").modal("show");
+    })
+
+    $(".btn_detail").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Detail Product")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodProduct/Detail?id=" + id)
+        $("#modal-default").modal("show");
+    })
+
+    $(".btn_delete").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#header-modal-default").empty()
+        $("#header-modal-default").text("Delete Product")
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/FoodProduct/Delete?id=" + id)
+        $("#modal-default").modal("show");
+    })
+</script>

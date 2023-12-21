@@ -1,0 +1,96 @@
+﻿<div class="card card-outline card-primary">
+    <div class="card-header text-center">
+        <a href="../../index2.html" class="h1"><b>Admin</b>LTE</a>
+    </div>
+    <div class="card-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+        <form asp-action="Login" method="get" id="form-login">
+            <div class="mb-3">
+                <input type="email" class="form-control" placeholder="Email" id="Email" name="Email">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Password" id="Password" name="Password">
+            </div>
+            <div class="mb-3">
+                <p id="val_login" class="text-danger"></p>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">
+                            Remember Me
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block" fdprocessedid="l1zrh">Sign In</button>
+                </div>
+
+            </div>
+        </form>
+        <div class="social-auth-links text-center mt-2 mb-3">
+            <a href="#" class="btn btn-block btn-primary">
+                <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+            </a>
+            <a href="#" class="btn btn-block btn-danger">
+                <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+            </a>
+        </div>
+
+        <p class="mb-1">
+            <a href="forgot-password.html">I forgot my password</a>
+        </p>
+        <p class="mb-0">
+            <a class="text-center" id="btn_register">Register a new membership</a>
+        </p>
+    </div>
+
+</div>
+<script>
+    $("#btn_register").click(function () {
+        $("#header-modal-default").remove()
+        $("#body-modal-default").empty()
+        $("#body-modal-default").load("/Auth/Register")
+        $("#modal-default").modal("show");
+    })
+
+    $("#form-login").validate({
+        errorClass: "is-invalid text-danger",
+        rules: {
+            Email: {
+                required: true,
+                email: true
+            },
+            Password: "required"
+        },
+        messages: {
+            Email: {
+                required: "Please enter Email",
+                email: "Please enter a valid email"
+            },
+            Password: "Please enter Password"
+        },
+        submitHandler: function (form) {
+            var dataForm = $(form).serialize();
+            $.ajax({
+                url: "/Auth/Login",
+                method: "post",
+                data: dataForm,
+                dataType: "json",
+                success: function (respon) {
+                    if (respon.success) {
+                        toastr.success(respon.message)
+                        setTimeout(function () {
+                            window.location.href = "/Home/Index"
+                        }, 2000);
+                    }
+                    else {
+                        $("#val_login").text(respon.message)
+                    }
+                }
+            })
+        }
+    })
+</script>

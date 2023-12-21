@@ -1,0 +1,208 @@
+﻿@using RumahMakanOnline_ViewModels
+@model List<VMFoodProduct>
+
+<div class="card">
+    <div class="row">
+        <div class="col-lg-4 col-sm-4">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3 id="tProduct">
+                        0
+                    </h3>
+                    <p>Total Product</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-sm-4">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3 id="estimate">0</h3>
+
+                    <p>Estimate Price</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pricetags"></i>
+                </div>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-sm-4">
+            <!-- small box -->
+            <div class="small-box bg-warning" id="btn_checkout">
+                <div class="inner">
+                    <h3>-</h3>
+
+                    <p>Checkout</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-card"></i>
+                </div>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
+    <div class="row">
+
+        @foreach (VMFoodProduct item in Model)
+        {
+            <div class="col-lg-4 col-sm-6">
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-responsive" src="~/images/@item.Image" alt="Product picture">
+                        </div>
+
+                        <h3 class="profile-username text-center" id="Name_@item.Id">@item.NameProduct</h3>
+
+                        <p class="text-muted text-center">@item.VarName - @item.CatName</p>
+
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Price</b> <a class="float-right" id="Price_@item.Id">@item.Price</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Stock</b> <a class="float-right" id="Stock_@item.Id">@item.Stock</a>
+                                <span id="valStock_@item.Id" class="text-danger" style="display:none">Out of Stock</span>
+                            </li>
+                        </ul>
+                        <div class="row">
+                            <div class="col-4">
+                                <button href="" type="button" class="btn btn-danger btn_min" dataid="@item.Id"><b>-</b></button>
+                            </div>
+                            <div class="col-4 text-center">
+                                <span id="totalItem_@item.Id">0</span>
+                            </div><div class="col-4">
+                                <button type="button" class="btn btn-primary float-right btn_plus" dataid="@item.Id"><b>+</b></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    var totalProduct = parseInt($("#tProduct").text())
+    var estimate = parseInt($("#estimate").text())
+    var obj = {}
+    var ListCart = []
+    var dataheader = {}
+
+    $(".btn_min").click(function () {
+        obj = {}
+
+        var id = $(this).attr("dataid")
+        //debugger
+        var harga = parseInt($("#Price_" + id).text())
+        var stock = parseInt($("#Stock_" + id).text())
+        var item = parseInt($("#totalItem_" + id).text())
+        var nameProduct = $("#Name_" + id).text()
+
+        if (item > 0) {
+            estimate = estimate - harga;
+            item--
+            stock++
+            totalProduct--
+
+            obj.IdProduct = id
+            obj.Qty = item
+            obj.Price = harga
+            obj.SubTotal = harga * item
+            obj.NameProduct = nameProduct
+        }
+        if (stock == 1) {
+            $("#valStock_" + id).hide();
+        }
+        $("#tProduct").text(totalProduct);
+        $("#estimate").text(estimate);
+        $("#Stock_" + id).text(stock);
+        $("#totalItem_" + id).text(item);
+
+        addList(id, obj)
+        console.log(ListCart)
+        setSession();
+    })
+
+
+    $(".btn_plus").click(function () {
+        obj = {}
+        //debugger
+        var id = $(this).attr("dataid")
+
+        var harga = parseInt($("#Price_" + id).text())
+        var item = parseInt($("#totalItem_" + id).text())
+        var stock = parseInt($("#Stock_" + id).text())
+        var nameProduct = $("#Name_" + id).text()
+
+        if (stock > 0) {
+            stock--
+            item++
+            totalProduct++
+            estimate = estimate + harga;
+
+            obj.IdProduct = id
+            obj.Qty = item
+            obj.Price = harga
+            obj.SubTotal = harga * item
+            obj.NameProduct = nameProduct
+        }
+        if (stock == 0) {
+            $("#valStock_" + id).show();
+        }
+        $("#tProduct").text(totalProduct);
+        $("#totalItem_" + id).text(item);
+        $("#Stock_" + id).text(stock);
+        $("#estimate").text(estimate);
+
+        addList(id, obj)
+        console.log(ListCart)
+        //setSession();
+    })
+    function addList(id, obj) {
+        //debugger
+        const index = ListCart.map(e => e.IdProduct).indexOf(id);
+        if (index == -1) {
+            ListCart.push(obj);
+        } else {
+            ListCart[index].Qty = obj.Qty
+            ListCart[index].SubTotal = obj.SubTotal
+        }
+    }
+    function spliceList(id, obj) {
+        const index = ListCart.map(e => e.IdProduct).indexOf(id);
+        if (index != -1) {
+            ListCart[index].Qty = obj.Qty
+            ListCart[index].SubTotal = obj.SubTotal
+
+            if (obj.Qty == 0) {
+                ListCart.splice(index, 1)
+            }
+        }
+    }
+
+    $("#btn_checkout").click(function () {
+        dataheader = {
+            Amount: estimate,
+            TotalQty: totalProduct,
+            ListDetail: ListCart
+        }
+        //debugger
+        $("#header-modal-xl").empty()
+        $("#header-modal-xl").html("<h3>Checkout Preview</h3>")
+        $("#body-modal-xl").empty()
+
+        if (ListCart.length <= 0) {
+            $("#body-modal-xl").html("<i>Please select the product</i>")
+        }
+        else {
+            $("#body-modal-xl").load("/Order/Checkout", dataheader)
+        }
+        $("#modal-xl").modal("show");
+    })
+</script>
